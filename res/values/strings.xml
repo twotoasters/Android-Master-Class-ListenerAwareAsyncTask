@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ListenerAwareAsyncTaskDemo</string>
+		<string name="progress">Percentage complete</string>
+		
+		<string name="switch_to_bad">Switch to bad example</string>
+		<string name="switch_to_good">Switch to good example</string>
+</resources>

@@ -1,0 +1,26 @@
+.DS_Store
+.project
+.settings/
+tmp/
+
+# built application files
+*.apk
+*.ap_
+*.o
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# coverage files
+coverage.em
+tests/coverage/
