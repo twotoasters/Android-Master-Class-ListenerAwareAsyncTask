@@ -13,7 +13,7 @@ import android.widget.Toast;
 public class DontUseAsyncTaskLikeThisActivity extends Activity {
 
 	private ProgressBar _progressBar = null;
-
+	private static AsyncTask<Integer, Integer, Void> _myTask;
 	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onDestroy()
@@ -46,44 +46,46 @@ public class DontUseAsyncTaskLikeThisActivity extends Activity {
 			}
 		});
 		
-		AsyncTask<Integer, Integer, Void> asyncTask = new AsyncTask<Integer, Integer, Void>() {
-
-			@Override
-			protected Void doInBackground(Integer... params) {
-				int totalTime = params[0];
-				int count = 0;
-				
-				while(count <= totalTime && !isCancelled()) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// don't care!
-					}
+		if(_myTask == null) {
+			_myTask = new AsyncTask<Integer, Integer, Void>() {
+	
+				@Override
+				protected Void doInBackground(Integer... params) {
+					int totalTime = params[0];
+					int count = 0;
 					
-					this.publishProgress((int)(((float)count++ / (float)totalTime) * 100f));
+					while(count <= totalTime && !isCancelled()) {
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// don't care!
+						}
+						
+						this.publishProgress((int)(((float)count++ / (float)totalTime) * 100f));
+					}
+					return null;
 				}
-				return null;
-			}
-
-			/* (non-Javadoc)
-			 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
-			 */
-			@Override
-			protected void onPostExecute(Void result) {
-				Toast.makeText(DontUseAsyncTaskLikeThisActivity.this, "Done!", Toast.LENGTH_LONG).show();
-			}
-
-			/* (non-Javadoc)
-			 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
-			 */
-			@Override
-			protected void onProgressUpdate(Integer... progress) {
-				// oh dear
-				_progressBar.setProgress(progress[0]);
-			}
-		};
+	
+				/* (non-Javadoc)
+				 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+				 */
+				@Override
+				protected void onPostExecute(Void result) {
+					Toast.makeText(DontUseAsyncTaskLikeThisActivity.this, "Done!", Toast.LENGTH_LONG).show();
+				}
+	
+				/* (non-Javadoc)
+				 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
+				 */
+				@Override
+				protected void onProgressUpdate(Integer... progress) {
+					// oh dear
+					_progressBar.setProgress(progress[0]);
+				}
+			};
 		
-		asyncTask.execute(120);
+			_myTask.execute(120);
+		}
 		
 	}
 
