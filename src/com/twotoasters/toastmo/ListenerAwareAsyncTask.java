@@ -1,5 +1,6 @@
 package com.twotoasters.toastmo;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 
 public abstract class ListenerAwareAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
@@ -22,12 +23,13 @@ public abstract class ListenerAwareAsyncTask<Params, Progress, Result> extends A
 	/**
 	 * Constructor that registers a listener.
 	 * 
+	 * @param the base <code>Activity</code> that the listener runs on
 	 * @param listener the listener to register.
 	 */
-	public ListenerAwareAsyncTask(OnCompleteListener<Progress, Result> listener) {
+	public ListenerAwareAsyncTask(Activity activity, OnCompleteListener<Progress, Result> listener) {
 		this();
 		
-		register(listener);
+		register(activity, listener);
 	}
 	
 	/* (non-Javadoc)
@@ -56,18 +58,22 @@ public abstract class ListenerAwareAsyncTask<Params, Progress, Result> extends A
 
 	/**
 	 * Register a listener to be notified when the task completes and updates progress.
-	 * Note that this must be called from the UI thread since it's possible the listener
-	 * will be called right now.
 	 * 
 	 * @param listener the listener to call
 	 */
-	public void register(OnCompleteListener<Progress, Result> listener) {
+	public void register(Activity activity, OnCompleteListener<Progress, Result> listener) {
 		_listener = listener;
 		
 		// see if we had a deferred result available
 		if(_result != null) {
-			_listener.onComplete(_result);
-			_result = null;
+			activity.runOnUiThread(new Runnable() {
+				
+				@Override
+				public void run() {
+					_listener.onComplete(_result);
+					_result = null;
+				}
+			});
 		}
 	}
 	

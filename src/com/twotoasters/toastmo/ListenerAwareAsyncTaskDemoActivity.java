@@ -83,7 +83,7 @@ public class ListenerAwareAsyncTaskDemoActivity extends Activity {
 		super.onResume();
 
 		if(_myTask == null) {
-			_myTask = new ListenerAwareAsyncTask<Integer, Integer, Void>(_myTaskListener) {
+			_myTask = new ListenerAwareAsyncTask<Integer, Integer, Void>(this, _myTaskListener) {
 
 				@Override
 				protected Void doInBackground(Integer... params) {
@@ -104,7 +104,7 @@ public class ListenerAwareAsyncTaskDemoActivity extends Activity {
 			};
 			_myTask.execute(120);
 		} else {
-			_myTask.register(_myTaskListener);
+			_myTask.register(this, _myTaskListener);
 		}
 	}
 
